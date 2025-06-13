@@ -128,7 +128,7 @@ def _display_face(draw, bounding_box, name):
 
 def recognition_unknown_face(image_location: str, model: str = "hog", encodings_location: Path = DEFAULT_ENCODINGS_PATH) -> None:
     if not Path(image_location).exists():
-        print(f"[ERROR] File ảnh không tồn tại: {image_location}")
+        print(f" File ảnh không tồn tại: {image_location}")
         return
 
     with encodings_location.open(mode="rb") as f:
@@ -162,6 +162,8 @@ def recognize_from_webcam(encodings_location: Path = DEFAULT_ENCODINGS_PATH, tol
     known_names = data["names"]
 
     cap = cv2.VideoCapture(0)
+    #cap.set(cv2.CAP_PROP_FRAME_WIDTH,1280)
+    #cap.set(cv2.CAP_PROP_FRAME_HEIGHT,720) 
 
     while cap.isOpened():
         ret, frame = cap.read()
@@ -205,7 +207,9 @@ def recognize_from_webcam_yolo(encodings_location: Path = DEFAULT_ENCODINGS_PATH
     known_names = data["names"]
 
     cap = cv2.VideoCapture(0)
-    models = YOLO("best.pt")
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH,1280)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT,720)
+    models = YOLO("yolov8x.pt")
 
     while cap.isOpened():
         start_time = time.time()

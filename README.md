@@ -66,3 +66,33 @@ Sử dụng cơ sở dữ liệu vector để tối ưu truy vấn embedding (FA
 Tối ưu mô hình cho các thiết bị biên (edge devices) như Raspberry Pi, Jetson Nano.
 Phát triển giao diện người dùng trực quan (web hoặc desktop).
 Mở rộng thêm tính năng phân tích biểu cảm khuôn mặt, cảnh báo an ninh.
+
+so sánh các model :
+I.Face Detective:
+1.MTCNN : gồm 3 mạng CNN (P,R,O - net) cấu trúc khác nhau vai trò khác nhau, nhẹ,có landmark(tai,mũi,miệng...), phát hiện góc nghiêng occlusion kém
+P - net (12x12)
+R - net (24x24)
+O - net (48x48)
+2.retinaface : Accuracy hàng đầu, tốt trong điều kiện khó như góc nghiêng, độ sáng yếu, mặt nhỏ, mặt che; phát hiện landmark 5 điểm + mesh 3D.
+chậm trên cpu
+3.blazeface :siêu nhẹ tối ưu cho mobile gpu fps cao
+acc thấp hơn retinaface phù hợp vs ar và realime k khuyên dùng khi cần acc cao
+
+II.Face recognition
+1.Facenet : sử dụng triple loss embedding 128-dim,chọn nếu cần nhẹ  
+2.vggface : network lớn (145tr tham số), xử lý full‑frontal faces rất tốt,tốt nếu sử lý ảnh rõ,không phù hợp cho các ứng dụng đòi hỏi độ chính xác rất cao trong các bài toán khó hơn,cấu trúc lớn khiến model có thể nặng và khó triển khai trong các môi trường có tài nguyên hạn chế.
+3.arcface : Sử dụng Additive Angular Margin Loss,512 dim embedding(có thể thay đổi),tính linh hoạt cao, hoạt động tốt trên cả khuôn mặt chính diện và không chính diện,nhẹ hơn vggface,cần tài nguyên tính toán khá mạnh để triển khai và huấn luyện.
+4.cosface : Cosine Margin Loss (La Loss),đơn giản và hiệu quả, đặc biệt trong các tình huống cần độ chính xác cao mà không đòi hỏi quá nhiều tài nguyên tính toán,dễ triển khai và cho kết quả khá ổn định, 
+
+Model	Accuracy (LFW)	Accuracy (YTF)	Accuracy (MegaFace)	Embedding	Loss Function	
+FaceNet	99.63%	95.1%	Không có dữ liệu	128-dim	Triplet Loss	
+VGGFace	~98.95%	~97.3%	Không có dữ liệu	Không rõ	Softmax Loss (Cross-entropy)	
+ArcFace	99.83%	98.02%	96.98%	512-dim	Additive Angular Margin Loss	Kết quả state-of-the-art, cấu trúc nhẹ hơn VGGFace
+CosFace	~99.5%+	Không có dữ liệu	Không có dữ liệu	512-dim	Cosine Margin Loss (La Loss)	
+
+
+
+
+
+
+
