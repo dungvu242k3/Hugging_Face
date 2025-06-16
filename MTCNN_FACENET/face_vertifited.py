@@ -39,7 +39,7 @@ for usr in os.listdir(IMG_PATH):
     if len(embeds) == 0:
         continue
 
-    user_embedding = torch.cat(embeds).mean(0, keepdim=True)  # shape [1, 512]
+    user_embedding = torch.cat(embeds).mean(0, keepdim=True)  
     embeddings_list.append(user_embedding)
     names.append(usr)
 
