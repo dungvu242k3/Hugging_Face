@@ -20,10 +20,24 @@ class FaceDatabase:
             pickle.dump(self.db, f)
 
     def add_face(self, name, embedding):
-        self.db[name] = embedding.cpu()
-        self.save_database()
+        if name in self.db:
+            self.db[name].append(embedding)
+        else:
+            self.db[name] = [embedding]
+
 
     def get_all(self):
-        names = list(self.db.keys())
-        embeddings = torch.stack([self.db[n] for n in names])
-        return names, embeddings
+        names = []
+        embeddings = []
+
+        for name, embs in self.db.items():
+            for emb in embs:
+                names.append(name)
+                embeddings.append(emb)
+
+        if len(embeddings) == 0:
+            return [], torch.empty((0, 512))
+
+        return names, torch.stack(embeddings)
+
+
