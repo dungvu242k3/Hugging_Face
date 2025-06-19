@@ -6,6 +6,7 @@ from modules.camera import Camera
 from modules.database import FaceDatabase
 from modules.detector import FaceDetector
 from modules.embeding import FaceEmbedder
+from modules.processing_images import load_faces_from_folder
 from modules.recognition import FaceRecognizer
 
 
@@ -14,11 +15,10 @@ def main():
     detector = FaceDetector(device)
     embedder = FaceEmbedder(device)
     database = FaceDatabase("database/database.pkl")
+    load_faces_from_folder("train", detector, embedder, database, device=device)
     recognizer = FaceRecognizer(database, device=device)
-    camera = Camera(width=1280, height=720)
+    camera = Camera()
 
-    cv2.namedWindow("Face Recognition", cv2.WINDOW_NORMAL)
-    cv2.resizeWindow("Face Recognition", 1280, 720)
     
 
     while True:
@@ -39,7 +39,6 @@ def main():
                 x1, y1, x2, y2 = map(int, box)
                 color = (0, 255, 0) if name != "Unknown" else (0, 0, 255)
                 label = name
-
                 if name == "Unknown":
                     label = f"Unknown{len(unknown_faces) + 1}"
                     unknown_faces.append((embedding, face_img))

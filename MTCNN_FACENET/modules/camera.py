@@ -63,6 +63,8 @@ print(f"Đã thêm: {name}")
 
 import cv2
 
+#640 480
+#1280 720 
 
 class Camera:
     def __init__(self, src=0, width=1280, height=720):

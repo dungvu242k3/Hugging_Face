@@ -13,25 +13,26 @@ class FaceDatabase:
         if os.path.exists(self.db_path):
             with open(self.db_path, "rb") as f:
                 return pickle.load(f)
-        return {}
+        return {}  
 
     def save_database(self):
         with open(self.db_path, "wb") as f:
             pickle.dump(self.db, f)
 
-    def add_face(self, name, embedding):
+    def add_face(self, name, embedding, filename=None):
+        record = (embedding, filename)
         if name in self.db:
-            self.db[name].append(embedding)
+            if filename and any(f == filename for _, f in self.db[name]):
+                return  
+            self.db[name].append(record)
         else:
-            self.db[name] = [embedding]
-
+            self.db[name] = [record]
 
     def get_all(self):
         names = []
         embeddings = []
-
-        for name, embs in self.db.items():
-            for emb in embs:
+        for name, records in self.db.items():
+            for emb, _ in records:
                 names.append(name)
                 embeddings.append(emb)
 
@@ -40,4 +41,5 @@ class FaceDatabase:
 
         return names, torch.stack(embeddings)
 
-
+    def get_filenames(self):
+        return {f for records in self.db.values() for _, f in records if f}
